@@ -87,6 +87,11 @@ client.on("messageCreate", async (msg) => {
 
   if (msg.mentions.members.has(client.user.id)) {
     let content = msg.content.replace(/<.+>/, "").replace(/ +/, " ").trim();
+    if (!content.length) {
+      await msg.reply(`🤖 Gerçekten hiç bir şey sormayacak mısın?`);
+      return;
+    }
+
     let thinkMsg = await msg.reply(`⏳ Düşünüyorum...`);
     msg.channel.sendTyping();
     let typingInterval = setInterval(() => {
