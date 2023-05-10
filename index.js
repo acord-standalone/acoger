@@ -7,7 +7,6 @@ dotenv.config();
 
 const aiClient = new BingAIClient({
   userToken: process.env.BING_SYDNEY_TOKEN,
-
 });
 
 // (async () => {
