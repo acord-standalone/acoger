@@ -81,11 +81,20 @@ const client = new Discord.Client({
   ]
 });
 
+let lastMessageAtTr = Date.now();
+
 client.on("messageCreate", async (msg) => {
   if (msg.author.bot) return;
   if (!isAIReady) return;
 
-  if (msg.mentions.members.has(client.user.id)) {
+  let bypass = false;
+
+  if (msg.channel.id === "1078487954927923220") {
+    if ((lastMessageAtTr + 1000 * 60 * 15) < Date.now() && msg.member.roles.cache.every(r => r.id === r.guild.id)) bypass = true;
+    lastMessageAtTr = Date.now();
+  }
+
+  if (bypass || msg.mentions.members.has(client.user.id)) {
     let content = msg.content.replace(/<.+>/, "").replace(/ +/, " ").trim();
     if (!content.length) {
       await msg.reply(`🤖 Gerçekten hiç bir şey sormayacak mısın?`);
