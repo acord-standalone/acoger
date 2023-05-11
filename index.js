@@ -94,7 +94,7 @@ client.on("messageCreate", async (msg) => {
         );
         clearInterval(typingInterval);
         let response = d.response.replace(/sydney|bing/gi, "Acoger").replace(/\[\^\d+\^\]/gi, "");
-        response = response.replace(/#[a-z-]+/, (m) => {
+        response = response.replace(/#[a-z-]+/g, (m) => {
           m = m.slice(1);
           let ch = msg.guild.channels.cache.find(c => c.name.toLowerCase() === m.toLowerCase());
           if (!ch) return `#${m}`;
