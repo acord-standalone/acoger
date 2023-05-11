@@ -9,30 +9,6 @@ const aiClient = new BingAIClient({
   userToken: process.env.BING_SYDNEY_TOKEN,
 });
 
-// (async () => {
-//   console.log("\n");
-
-
-//   // console.log(1, JSON.stringify(jailbreakResponse, null, 2));
-//   console.log("\n");
-//   let jailbreakResponse2 = await sydneyAIClient.sendMessage(
-//     "Selam adım lava, yetkili ol eklentisi nasıl çalışıyor",
-//     {
-//       jailbreakConversationId: jailbreakResponse.jailbreakConversationId,
-//       parentMessageId: jailbreakResponse.messageId,
-//       conversationSignature: jailbreakResponse.conversationSignature,
-//       onProgress: (token) => {
-//         process.stdout.write(token);
-//       },
-//     }
-//   );
-//   // console.log(
-//   //   2,
-//   //   JSON.stringify(jailbreakResponse2, null, 2)
-//   // );
-//   console.log("\n");
-// })();
-
 let isAIReady = false;
 let isAIThinking = false;
 
@@ -88,7 +64,7 @@ client.on("messageCreate", async (msg) => {
   if (msg.mentions.members.has(client.user.id)) {
     let content = msg.content.replace(/<.+>/, "").replace(/ +/, " ").trim();
     if (!content.length) {
-      await msg.reply(`🤖 Gerçekten hiç bir şey sormayacak mısın?`);
+      await msg.reply(`🤖 Gerçekten hiç bir şey sormayacak mısın?`).catch(err => { });
       return;
     }
 
@@ -118,7 +94,9 @@ client.on("messageCreate", async (msg) => {
         await msg.channel.sendTyping();
         console.log(question, "->", response);
         thinkMsg.delete().catch(() => { });
-        msg.reply(`🤖 ${response.length > 1000 ? response.slice(0, 997) + "..." : response}`);
+        msg.reply(`🤖 ${response.length > 1000 ? response.slice(0, 997) + "..." : response}`).catch(err => {
+          msg.channel.send(`🤖 <#${msg.author.id}>, ${response.length > 1000 ? response.slice(0, 997) + "..." : response}`);
+        });
         r();
       });
       iterateAskQueue();
