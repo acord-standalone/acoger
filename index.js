@@ -104,7 +104,7 @@ client.on("messageCreate", async (msg) => {
         console.log(question, "->", response);
         thinkMsg.delete().catch(() => { });
         msg.reply(`🤖 ${response.length > 1000 ? response.slice(0, 997) + "..." : response}`).catch(err => {
-          msg.channel.send(`🤖 <#${msg.author.id}>, ${response.length > 1000 ? response.slice(0, 997) + "..." : response}`);
+          msg.channel.send(`🤖 <@${msg.author.id}>, ${response.length > 1000 ? response.slice(0, 997) + "..." : response}`);
         });
         r();
       });
