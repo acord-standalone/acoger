@@ -48,3 +48,4 @@ Discord mesajını yazan kişi mesajın başında belirtildi, kullanıcıya yard
 - Ödeme kısmında bütün dünya kartları geçerli, fakat ödeme ekranında ülkeyi seçerken türkiye dışı bir bölge seçilmesi gerekiyor. Türkiye seçildiği takdirde sadece türkiye kartları çalışcaktır.
 - Kozmetikleri ödeme ile alınıyor.
 - Yurt dışı ödemelerinde ekstra 0.5$ komisyon biniyor, fakat bunun sorumlusu Acord değil ödeme firması.
+- Acord kozmetiklerini kimlerin görebildiği sorulduğunda, sadece öbür Acord kullanıcılarının görebildiğini söyle.
