@@ -1,39 +1,47 @@
-import { BingAIClient } from "@waylaidwanderer/chatgpt-api";
+import { ChatGPTAPI } from 'chatgpt'
 import dotenv from "dotenv";
 import Discord from "discord.js";
 import fs from "fs";
 
 dotenv.config();
 
-const aiClient = new BingAIClient({
-  userToken: process.env.BING_SYDNEY_TOKEN,
-});
+let startupPrompt = fs.readFileSync("./startup-prompt.txt", "utf-8");
+const iaClient = new ChatGPTAPI({
+  apiKey: process.env.OPENAI_API_KEY,
+  completionParams: {
+    max_tokens: 150,
+    model: "gpt-3.5-turbo",
+    // temperature: 0.3
+  },
+  systemMessage: startupPrompt
+})
 
-let isAIReady = false;
+let isAIReady = true;
 let isAIThinking = false;
 
-let dataForNewMessage = null;
-let startupPrompt = fs.readFileSync("./startup-prompt.txt", "utf-8");
+// let dataForNewMessage = null;
 
-(async () => {
-  isAIReady = false;
-  isAIThinking = true;
-  console.log("Loading AI...");
-  let d = await aiClient.sendMessage(
-    startupPrompt,
-    {
-      jailbreakConversationId: true
-    });
-  dataForNewMessage = {
-    jailbreakConversationId: d.jailbreakConversationId,
-    parentMessageId: d.messageId,
-    conversationSignature: d.conversationSignature,
-  }
-  console.log(d.response);
-  console.log("AI Loaded!");
-  isAIReady = true;
-  isAIThinking = false;
-})();
+// (async () => {
+//   isAIReady = false;
+//   isAIThinking = true;
+//   console.log("Loading AI...");
+
+//   let d = await iaClient.sendMessage(
+//     startupPrompt,
+//     {
+//       onProgress: msg => console.log(msg.text),
+//     }
+//   );
+//   dataForNewMessage = {
+//     // jailbreakConversationId: d.jailbreakConversationId,
+//     parentMessageId: d.id,
+//     // conversationId: d.conversationId,
+//   }
+//   console.log(d.text);
+//   console.log("AI Loaded!");
+//   isAIReady = true;
+//   isAIThinking = false;
+// })();
 
 /** @type {{ message: string, resolve: () => Promise<string> }[]} */
 let askQueue = [];
@@ -85,15 +93,15 @@ client.on("messageCreate", async (msg) => {
     await new Promise(r => {
       askQueue.push(async () => {
         let question = `Selam ben ${msg.author.username}, ${content}`;
-        let d = await aiClient.sendMessage(
+        let d = await iaClient.sendMessage(
           question,
           {
-            ...dataForNewMessage,
-            onProgress: console.log
+            // ...dataForNewMessage,
+            onProgress: msg => console.log(msg.text),
           }
         );
         clearInterval(typingInterval);
-        let response = d.response.replace(/sydney|bing/gi, "Acoger").replace(/\[\^\d+\^\]/gi, "");
+        let response = d.text.replace(/chatgpt/gi, "Acoger").replace(/\[\^\d+\^\]/gi, "");
         response = response.replace(/#[a-z-]+/g, (m) => {
           m = m.slice(1);
           let ch = msg.guild.channels.cache.find(c => c.name.toLowerCase() === m.toLowerCase());
